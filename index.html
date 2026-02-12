@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Komplain Rz.Speed</title>
+</head>
+<body>
+
+<h2>Form Komplain</h2>
+
+<input id="nama" placeholder="Nama"><br><br>
+<input id="alamat" placeholder="Alamat"><br><br>
+<textarea id="keluhan" placeholder="Keluhan"></textarea><br><br>
+<input type="text" id="foto" placeholder="Link Foto Modem (opsional)"><br><br>
+
+<button onclick="kirim()">Kirim</button>
+
+<script>
+async function kirim(){
+  await fetch("https://script.google.com/macros/s/AKfycbwBhhCGQ7Xk0zt5dMueQPrLmsOJc9NQbp3Sk7eiMprvyMR8_-t_ReveDCSbCQqFSgkL/exec",{
+    method:"POST",
+    body:JSON.stringify({
+      nama:document.getElementById("nama").value,
+      alamat:document.getElementById("alamat").value,
+      keluhan:document.getElementById("keluhan").value,
+      foto:document.getElementById("foto").value
+    })
+  });
+
+  alert("Komplain terkirim!");
+}
+</script>
+
+</body>
+</html>
