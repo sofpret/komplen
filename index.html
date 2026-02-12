@@ -122,7 +122,7 @@ async function kirim(){
   const data={nama,alamat,keluhan,foto:fotoBase64};
 
   try{
-    await fetch("https://script.google.com/macros/s/AKfycby1U5HlYmYsyLh6mWYEW0ORcIO-GWLDWc--clgei_h6seMFSgKwDjxYOb0MOhE1NWAM/exec",{
+    await fetch("https://script.google.com/macros/s/AKfycbzNhUoYoHyGUgzyqWq95V0HcjwYJhIYYSC0kQk7pzA_lAJta1WT7N_YBOwQJO2Lsz8O/exec",{
       method:"POST",
       body:JSON.stringify(data)
     });
