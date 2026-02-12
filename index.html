@@ -4,103 +4,51 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Laporan Trouble Rz.Speed</title>
-
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
 
 body {
-    background: linear-gradient(135deg, #4fd1c5, #3182ce);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: #1a202c;
+    background: linear-gradient(135deg,#4fd1c5,#3182ce);
+    display:flex; justify-content:center; align-items:center; height:100vh; color:#1a202c;
 }
 
 .container {
     background: rgba(255,255,255,0.95);
-    padding: 35px;
-    width: 400px;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    padding: 35px; width:400px; border-radius:20px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.2);
     animation: fadeIn 0.8s ease;
 }
 
-h1 {
-    text-align: center;
-    font-size: 22px;
-    color: #2b6cb0;
-    margin-bottom: 5px;
-}
-
-.time {
-    text-align: center;
-    font-size: 13px;
-    color: #4a5568;
-    margin-bottom: 20px;
-}
+h1 { text-align:center; font-size:22px; color:#2b6cb0; margin-bottom:5px; }
+.time { text-align:center; font-size:13px; color:#4a5568; margin-bottom:20px; }
 
 input, textarea {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 10px;
-    border: 1px solid #cbd5e0;
-    outline: none;
-    transition: 0.3s;
+    width:100%; padding:12px; margin-top:10px; border-radius:10px;
+    border:1px solid #cbd5e0; outline:none; transition:0.3s;
 }
-
-input:focus, textarea:focus {
-    border-color: #38b2ac;
-    box-shadow: 0 0 8px rgba(56,178,172,0.4);
-}
+input:focus, textarea:focus { border-color:#38b2ac; box-shadow:0 0 8px rgba(56,178,172,0.4); }
 
 button {
-    width: 100%;
-    margin-top: 18px;
-    padding: 12px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, #38b2ac, #3182ce);
-    color: white;
-    font-weight: bold;
-    font-size: 15px;
-    cursor: pointer;
-    transition: 0.3s;
+    width:100%; margin-top:18px; padding:12px; border:none; border-radius:12px;
+    background:linear-gradient(135deg,#38b2ac,#3182ce); color:white; font-weight:bold;
+    font-size:15px; cursor:pointer; transition:0.3s; display:flex; justify-content:center; align-items:center;
+}
+button:hover { transform:translateY(-2px); box-shadow:0 10px 20px rgba(0,0,0,0.2); }
+
+.spinner {
+    border:3px solid #f3f3f3; border-top:3px solid white; border-radius:50%; width:16px; height:16px;
+    animation:spin 1s linear infinite; margin-left:10px;
+    display:none;
 }
 
-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-}
+.success { text-align:center; display:none; }
+.success h2 { color:#2f855a; margin-bottom:15px; }
+.success p { font-size:14px; color:#2d3748; }
 
-.success {
-    text-align: center;
-    display: none;
-}
-
-.success h2 {
-    color: #2f855a;
-    margin-bottom: 15px;
-}
-
-.success p {
-    font-size: 14px;
-    color: #2d3748;
-}
-
-@keyframes fadeIn {
-    from {opacity: 0; transform: translateY(20px);}
-    to {opacity: 1; transform: translateY(0);}
-}
+@keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+@keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
 </style>
 </head>
-
 <body>
 
 <div class="container" id="formBox">
@@ -112,15 +60,18 @@ button:hover {
     <textarea id="keluhan" placeholder="Jelaskan kendala yang dialami..." rows="4" required></textarea>
     <input type="file" id="foto" accept="image/*" capture="environment">
 
-    <button onclick="kirim()">Kirim Laporan</button>
+    <button id="btnKirim" onclick="kirim()">
+        Kirim Laporan
+        <div class="spinner" id="spinner"></div>
+    </button>
 </div>
 
 <div class="container success" id="successBox">
     <h2>✅ Laporan Berhasil Dikirim</h2>
     <p>
         Terima kasih telah melaporkan kendala Anda.<br><br>
-        Laporan telah kami terima dan sedang diproses oleh tim teknisi Rz.Speed.<br><br>
-        Teknisi akan segera menuju lokasi Anda sesuai antrian layanan.<br><br>
+        Laporan telah diterima dan sedang diproses oleh tim teknisi Rz.Speed.<br><br>
+        Teknisi akan segera menuju lokasi Anda.<br><br>
         Mohon pastikan nomor dan alamat dapat dihubungi.<br><br>
         Salam cepat & stabil 🚀
     </p>
@@ -131,26 +82,37 @@ button:hover {
 function updateTime(){
     const now = new Date();
     const formatted = now.toLocaleString("id-ID", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
+        weekday:"long", year:"numeric", month:"long", day:"numeric",
+        hour:"2-digit", minute:"2-digit", second:"2-digit"
     });
     document.getElementById("datetime").innerText = formatted;
 }
-setInterval(updateTime, 1000);
+setInterval(updateTime,1000);
 updateTime();
+
+// Convert file ke Base64
+function toBase64(file){
+    return new Promise((resolve,reject)=>{
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = ()=>resolve(reader.result);
+        reader.onerror=error=>reject(error);
+    });
+}
 
 // Kirim data
 async function kirim(){
+    const btn = document.getElementById("btnKirim");
+    const spinner = document.getElementById("spinner");
+    
+    btn.disabled = true;
+    spinner.style.display = "inline-block";
+    btn.firstChild.textContent = "Mengirim...";
 
     const fileInput = document.getElementById("foto");
     let fotoBase64 = "";
 
-    if (fileInput.files.length > 0) {
+    if(fileInput.files.length>0){
         const file = fileInput.files[0];
         fotoBase64 = await toBase64(file);
     }
@@ -162,24 +124,23 @@ async function kirim(){
         foto: fotoBase64
     };
 
-    await fetch("https://script.google.com/macros/s/AKfycbwvnvs_yLFsdYzDJY9MGywCv1KZKVRny_rbd44xROrUwWytf6mOSBjTKkXeMHrqwMco/exec", {
-        method: "POST",
-        body: JSON.stringify(data)
-    });
+    try{
+        // Kirim data teks dulu
+        await fetch("https://script.google.com/macros/s/AKfycbwvnvs_yLFsdYzDJY9MGywCv1KZKVRny_rbd44xROrUwWytf6mOSBjTKkXeMHrqwMco/exec",{
+            method:"POST",
+            body:JSON.stringify(data)
+        });
 
-    document.getElementById("formBox").style.display = "none";
-    document.getElementById("successBox").style.display = "block";
-}
-
-function toBase64(file){
-    return new Promise((resolve, reject)=>{
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = ()=> resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
+        // Sembunyikan form, tampilkan sukses
+        document.getElementById("formBox").style.display="none";
+        document.getElementById("successBox").style.display="block";
+    } catch(e){
+        alert("Terjadi kesalahan, coba lagi!");
+        btn.disabled=false;
+        spinner.style.display="none";
+        btn.firstChild.textContent="Kirim Laporan";
+    }
 }
 </script>
-
 </body>
 </html>
