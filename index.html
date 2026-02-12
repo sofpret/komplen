@@ -130,7 +130,7 @@ async function kirim(){
     const data = { nama, alamat, keluhan, foto: fotoBase64 };
 
     try{
-        await fetch("URL_APPS_SCRIPT_KAMU",{
+        await fetch("https://script.google.com/macros/s/AKfycbwvnvs_yLFsdYzDJY9MGywCv1KZKVRny_rbd44xROrUwWytf6mOSBjTKkXeMHrqwMco/exec",{
             method:"POST",
             body:JSON.stringify(data)
         });
