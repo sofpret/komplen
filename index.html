@@ -100,11 +100,21 @@ function toBase64(file){
     });
 }
 
-// Kirim data
 async function kirim(){
     const btn = document.getElementById("btnKirim");
     const spinner = document.getElementById("spinner");
-    
+
+    // Ambil nilai field
+    const nama = document.getElementById("nama").value.trim();
+    const alamat = document.getElementById("alamat").value.trim();
+    const keluhan = document.getElementById("keluhan").value.trim();
+
+    // Validasi
+    if(!nama || !alamat || !keluhan){
+        alert("Semua field wajib diisi sebelum mengirim!");
+        return; // berhenti kalau kosong
+    }
+
     btn.disabled = true;
     spinner.style.display = "inline-block";
     btn.firstChild.textContent = "Mengirim...";
@@ -112,21 +122,15 @@ async function kirim(){
     const fileInput = document.getElementById("foto");
     let fotoBase64 = "";
 
-    if(fileInput.files.length>0){
+    if(fileInput.files.length > 0){
         const file = fileInput.files[0];
         fotoBase64 = await toBase64(file);
     }
 
-    const data = {
-        nama: document.getElementById("nama").value,
-        alamat: document.getElementById("alamat").value,
-        keluhan: document.getElementById("keluhan").value,
-        foto: fotoBase64
-    };
+    const data = { nama, alamat, keluhan, foto: fotoBase64 };
 
     try{
-        // Kirim data teks dulu
-        await fetch("https://script.google.com/macros/s/AKfycbwvnvs_yLFsdYzDJY9MGywCv1KZKVRny_rbd44xROrUwWytf6mOSBjTKkXeMHrqwMco/exec",{
+        await fetch("URL_APPS_SCRIPT_KAMU",{
             method:"POST",
             body:JSON.stringify(data)
         });
@@ -141,6 +145,7 @@ async function kirim(){
         btn.firstChild.textContent="Kirim Laporan";
     }
 }
+
 </script>
 </body>
 </html>
