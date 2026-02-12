@@ -43,8 +43,8 @@ Kirim Laporan
 <h2>✅ Laporan Berhasil Dikirim</h2>
 <p>
 Terima kasih telah melaporkan kendala Anda.<br><br>
-Laporan diterima dan sedang diproses oleh tim teknisi Rz.Speed.<br><br>
-Teknisi akan segera menuju lokasi Anda.<br><br>
+Laporan diterima dan sedang diproses tim teknisi Rz.Speed.<br><br>
+Teknisi akan segera menuju lokasi.<br><br>
 Pastikan nomor & alamat bisa dihubungi.<br><br>
 Salam cepat & stabil 🚀
 </p>
@@ -68,46 +68,64 @@ function toBase64(file){
   return new Promise((resolve,reject)=>{
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = ()=>resolve(reader.result);
+    reader.onload=()=>resolve(reader.result);
     reader.onerror=error=>reject(error);
+  });
+}
+
+// Kompres foto
+function compressImage(file, maxWidth, maxHeight){
+  return new Promise(resolve=>{
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = e=>{
+      const img = new Image();
+      img.src = e.target.result;
+      img.onload = ()=>{
+        const canvas=document.createElement("canvas");
+        const ctx=canvas.getContext("2d");
+        const ratio=Math.min(maxWidth/img.width,maxHeight/img.height,1);
+        canvas.width=img.width*ratio;
+        canvas.height=img.height*ratio;
+        ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        resolve(canvas.toDataURL("image/jpeg",0.7));
+      }
+    }
   });
 }
 
 // Kirim data
 async function kirim(){
-  const btn = document.getElementById("btnKirim");
-  const spinner = document.getElementById("spinner");
+  const btn=document.getElementById("btnKirim");
+  const spinner=document.getElementById("spinner");
 
-  const nama = document.getElementById("nama").value.trim();
-  const alamat = document.getElementById("alamat").value.trim();
-  const keluhan = document.getElementById("keluhan").value.trim();
+  const nama=document.getElementById("nama").value.trim();
+  const alamat=document.getElementById("alamat").value.trim();
+  const keluhan=document.getElementById("keluhan").value.trim();
 
   if(!nama||!alamat||!keluhan){
     alert("Semua field wajib diisi sebelum mengirim!");
     return;
   }
 
-  btn.disabled = true;
+  btn.disabled=true;
   spinner.style.display="inline-block";
   btn.firstChild.textContent="Mengirim...";
 
-  const fileInput = document.getElementById("foto");
-  let fotoBase64 = "";
+  const fileInput=document.getElementById("foto");
+  let fotoBase64="";
   if(fileInput.files.length>0){
-    const file = fileInput.files[0];
-
-    // Resize foto kalau besar
-    fotoBase64 = await compressImage(file, 800, 800);
+    const file=fileInput.files[0];
+    fotoBase64=await compressImage(file,800,800);
   }
 
-  const data = {nama, alamat, keluhan, foto: fotoBase64};
+  const data={nama,alamat,keluhan,foto:fotoBase64};
 
   try{
-    await fetch("https://script.google.com/macros/s/AKfycbzfG2Nf1_K36flEmEmhqcibuXzLP7PlCb7dooeJFmnleihfoWax56NT53aTGda7dYnX/exec",{
+    await fetch("https://script.google.com/macros/s/AKfycbzfvhOEGusYbsEmTaK-KYMX1vkdrIVc4fV1upK_M2xtD1ocMfxJFKOp0JnyCljhwTQU/exec",{
       method:"POST",
       body:JSON.stringify(data)
     });
-
     document.getElementById("formBox").style.display="none";
     document.getElementById("successBox").style.display="block";
   }catch(e){
@@ -116,28 +134,6 @@ async function kirim(){
     spinner.style.display="none";
     btn.firstChild.textContent="Kirim Laporan";
   }
-}
-
-// Compress foto sebelum upload
-function compressImage(file, maxWidth, maxHeight){
-  return new Promise((resolve)=>{
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = event=>{
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = ()=>{
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
-
-        let ratio = Math.min(maxWidth/img.width, maxHeight/img.height,1);
-        canvas.width = img.width*ratio;
-        canvas.height = img.height*ratio;
-        ctx.drawImage(img,0,0,canvas.width,canvas.height);
-        resolve(canvas.toDataURL("image/jpeg",0.7)); // kompres 70%
-      }
-    }
-  });
 }
 </script>
 </body>
